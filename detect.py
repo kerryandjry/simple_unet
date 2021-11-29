@@ -21,7 +21,7 @@ def run(weights: str, image: str, save_path: str):
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', type=str, default='runs/train/exp5/weights/best.pt')
+    parser.add_argument('--weights', type=str, default='params/best.pt')
     parser.add_argument('--image', type=str, default='')
     parser.add_argument('--save_path', type=str, default='')
     opt = parser.parse_args()

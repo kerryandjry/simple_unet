@@ -29,8 +29,9 @@ class MyDataset(Dataset):
 
 
 if __name__ == '__main__':
-    data = MyDataset(r'VOC2012')
-    print(data[0][0])
-    print(data[0][1])
-    plt.imshow(data[0][1].permute(1, 2, 0))
-    plt.show()
+    data = MyDataset(r'VOC2008')
+    print(len(data))
+    # print(data[0][0])
+    # print(data[0][1])
+    # plt.imshow(data[0][1].permute(1, 2, 0))
+    # plt.show()

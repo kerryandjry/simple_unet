@@ -8,12 +8,12 @@ from net import *
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-weight_path = r'params/114.pt'
+weight_path = r'params/best.pt'
 data_path = 'VOC2012'
 save_path = 'train_image'
 
 if __name__ == '__main__':
-    data_loader = DataLoader(MyDataset(data_path), batch_size=8, shuffle=True)
+    data_loader = DataLoader(MyDataset(data_path), batch_size=10, shuffle=True)
     net = UNet().to(device)
     if os.path.exists(weight_path):
         net.load_state_dict(torch.load(weight_path))
@@ -25,17 +25,15 @@ if __name__ == '__main__':
     loss = nn.BCELoss()
 
     epoch = 1
-    best_loss = 0
+    best_loss = 100
     while True:
-        less_one_loss = 0
+        loss_sum = 0
         for i, (image, segment_image) in enumerate(data_loader):
             image, segment_image = image.to(device), segment_image.to(device)
 
             out_image = net(image).to(device)
             train_loss = loss(out_image, segment_image)
-
-            if train_loss < 0.15:
-                less_one_loss += 1
+            loss_sum += train_loss
 
             opt.zero_grad()
             train_loss.backward()
@@ -49,9 +47,9 @@ if __name__ == '__main__':
             if i % 5 == 0:
                 print(f'{epoch}-{i}-train_loss ===>>{train_loss}')
 
-        print(f'best_loss = {best_loss}, less_one_loss = {less_one_loss}')
-        if less_one_loss > best_loss:
-            best_loss = less_one_loss
+        print(f'best_loss = {best_loss}, less_one_loss = {loss_sum}')
+        if loss_sum < best_loss:
+            best_loss = loss_sum
             torch.save(net.state_dict(), f'params/best.pt')
             print(f'save weight success!')
 
